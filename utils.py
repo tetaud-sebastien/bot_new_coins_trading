@@ -7,6 +7,7 @@ import ssl
 import os
 from exchange_logger import ExchangeLog
 
+
 def extract_usdt_pair(exchange):
 
     symbols = list(exchange.fetch_tickers())
@@ -24,21 +25,19 @@ def detect_new_listing(exchange, listing):
     return new_listing
 
 
-def send_notification(conf_path, coin):
-
+def send_notification(symbol, conf_path):
 
     if os.path.isfile(conf_path):
-            
         conf = pd.read_json(conf_path)
         email = conf['email']['email_adress']
-        password = conf['email_password']
+        password = conf['email']['email_password']
 
     port = 465  # For SSL
     smtp_server = "smtp.gmail.com"
     sent_from = email
     to = [email]
     subject = f'New token on Binance'
-    body = f'New token as been listed: ' + coin
+    body = f'New token as been listed: ' + symbol
     message = 'Subject: {}\n\n{}'.format(subject, body)
 
     try:
@@ -49,3 +48,22 @@ def send_notification(conf_path, coin):
 
     except Exception as e:
         print(e)
+
+
+def create_buyorder(exchange, cost, symbol):
+
+    price = exchange.fetch_ticker(symbol=symbol)
+    price = price['last']
+    amount = cost / price
+    log_buyorder = exchange.createOrder(symbol, 'market', 'buy', amount)
+    
+    return log_buyorder
+
+def create_sellorder(exchange, cost, symbol):
+
+    price = exchange.fetch_ticker(symbol=symbol)
+    price = price['last']
+    amount = cost / price
+    log_sellorder = exchange.createOrder(symbol, 'market', 'sell', amount)
+
+    return log_sellorder
