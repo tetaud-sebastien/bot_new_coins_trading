@@ -7,7 +7,7 @@ import time
 from exchange_logger import ExchangeLog
 from utils import extract_usdt_pair
 from utils import detect_new_listing
-
+from utils import send_notification
 
 if __name__ == "__main__":
     
