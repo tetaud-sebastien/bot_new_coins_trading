@@ -3,32 +3,34 @@
 import pandas as pd
 import ccxt
 import json
+import time
 from exchange_logger import ExchangeLog
+from utils import extract_usdt_pair
+from utils import detect_new_listing
 
 
-# log 
-binance = ExchangeLog(exchang_id='binance',conf_path='.config.json')
-binance = binance.log()
+if __name__ == "__main__":
+    
+    binance = ExchangeLog(exchang_id='binance',conf_path='.config.json')
+    binance = binance.log()
+    # initialization
+    listing = extract_usdt_pair(exchange=binance)
 
-def extract_usdt_pair(exchange):
+    while True:
+        
+        try:
+            new_listing = detect_new_listing(binance, listing)
+        except Exception as err:
+            print(err)
+            continue
 
-    symbols = list(exchange.fetch_tickers())
-    df = pd.DataFrame({'symbol':symbols})
-    df = df[df['symbol'].str.contains("/USDT")]
-    return df
+        if len(new_listing) > 0:
 
-def detect_new_listing(exchange, listing):
-
-    symbols = list(exchange.fetch_tickers())
-    df = pd.DataFrame({'symbol':symbols})
-    df = df[df['symbol'].str.contains("/USDT")]
-    new_listing = pd.concat([df,listing]).drop_duplicates(keep=False)
-    return new_listing
-
-
-
-listing = extract_usdt_pair(exchange=binance)
-new_listing = detect_new_listing(binance, listing)
-
-if len(new_listing) > 0:
-    print(new_listing)
+            new_pair = new_listing['symbol'].values[0]
+            
+            # buy process
+            # re initialization for a new token listing 
+            listing = new_listing
+        else:
+            print('no token found')
+        time.sleep(1)
