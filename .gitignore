@@ -2,8 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+# custom
 explore.ipynb
 .config.json
+.DS_Store
 # C extensions
 *.so
 
