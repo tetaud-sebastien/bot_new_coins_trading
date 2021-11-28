@@ -19,7 +19,6 @@ def extract_usdt_pair(exchange):
 def detect_new_listing(exchange, listing):
     
     symbols = list(exchange.fetch_tickers())
-    symbols.append('BITE/USDT')
     df = pd.DataFrame({'symbol':symbols})
     df = df[df['symbol'].str.contains("/USDT")]
     new_listing = pd.concat([df,listing]).drop_duplicates(keep=False)
