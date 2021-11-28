@@ -29,9 +29,9 @@ if __name__ == "__main__":
 
             new_symbol = new_listing['symbol'].values[0]
             # buy process
-            log_buy = create_buyorder(exchange=binance, cost=100, symbol=new_symbol)
+            #log_buy = create_buyorder(exchange=binance, cost=100, symbol=new_symbol)
             time.sleep(10)
-            log_sell = create_sellorder(exchange=binance, cost=100, symbol=new_symbol)
+            #log_sell = create_sellorder(exchange=binance, cost=100, symbol=new_symbol)
             # re initialization for a new token listing 
             listing = new_listing
             send_notification(symbol=new_symbol, conf_path='.config.json')
