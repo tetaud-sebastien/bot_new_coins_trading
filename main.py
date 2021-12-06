@@ -35,6 +35,5 @@ if __name__ == "__main__":
             # re initialization for a new token listing 
             listing = new_listing
             send_notification(symbol=new_symbol, conf_path='.config.json')
-        else:
-            print('no token found')
+
         time.sleep(0.05)
