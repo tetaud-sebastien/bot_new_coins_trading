@@ -15,20 +15,20 @@ class ExchangeLog():
 
     """
 
-    def __init__(self, exchang_id, conf_path):
+    def __init__(self, exchange_id, conf_path):
 
         """Extract exchange name, api credential, type of account
         """
 
-        self.exchang_id = exchang_id
+        self.exchange_id = exchange_id
         self.conf_path = conf_path
-        print("Log to %s ..." %(self.exchang_id))
+        print("Log to %s ..." %(self.exchange_id))
         if os.path.isfile(self.conf_path):
             
             self.exchange_conf = pd.read_json(conf_path)
-            self.api_key = self.exchange_conf['exchange'][self.exchang_id]['api_source_key']
-            self.secret_key = self.exchange_conf['exchange'][self.exchang_id]['api_source_secret']
-            self.exchange_type = self.exchange_conf['exchange'][self.exchang_id]['type']         
+            self.api_key = self.exchange_conf['exchange'][self.exchange_id]['api_source_key']
+            self.secret_key = self.exchange_conf['exchange'][self.exchange_id]['api_source_secret']
+            self.exchange_type = self.exchange_conf['exchange'][self.exchange_id]['type']         
         else:
             print('Could not find the config file to log')
 
@@ -40,7 +40,7 @@ class ExchangeLog():
             [class]: return an intentiate class of the logged exchange
         """
 
-        exchange_class = getattr(ccxt, self.exchang_id)
+        exchange_class = getattr(ccxt, self.exchange_id)
         exchange = exchange_class({
             'apiKey': self.api_key,
             'secret': self.secret_key,
@@ -50,7 +50,7 @@ class ExchangeLog():
                 'defaultType': self.exchange_type,
             },
         })
-        print("Succesfully logged to %s succesfull" %(self.exchang_id))
+        print("Succesfully logged to %s succesfull" %(self.exchange_id))
         return exchange
 
 
@@ -59,16 +59,26 @@ def extract_usdt_pair(exchange):
     symbols = list(exchange.fetch_tickers())
     df = pd.DataFrame({'symbol':symbols})
     df = df[df['symbol'].str.contains("/USDT")]
+    df = df.reset_index(drop=True)
     return df
 
+def save_json(df,filename):
 
-def detect_new_listing(exchange, listing):
+    df.to_json(filename)
+
+
+def read_json(filename):
+
+    return pd.read_json(filename)
+
+def detect_new_symbol(listing, new_listing):
     
-    symbols = list(exchange.fetch_tickers())
-    df = pd.DataFrame({'symbol':symbols})
-    df = df[df['symbol'].str.contains("/USDT")]
-    new_listing = pd.concat([df,listing]).drop_duplicates(keep=False)
-    return new_listing
+    df_listing = pd.read_json(listing)
+    df_new_listing = pd.read_json(new_listing)
+    new_symbol = pd.concat([df_listing,df_new_listing]).drop_duplicates(keep=False)
+    new_symbol = new_symbol.reset_index(drop=True)
+
+    return new_symbol
 
 
 def send_notification(symbol, conf_path):
