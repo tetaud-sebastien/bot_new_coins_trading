@@ -1,4 +1,4 @@
-# bot_new_coins_trading
+# Trading bot that detects new coins as soon as they are listed on a given exchange and automatically places sell and buy orders with email notification
 
 Create a virtual environment (Python 3.9) or use conda to create a virtual environment:
 
