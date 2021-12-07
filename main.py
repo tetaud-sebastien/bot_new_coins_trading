@@ -4,7 +4,7 @@ import pandas as pd
 import ccxt
 import json
 import time
-from exchange_logger import ExchangeLog
+from utils import ExchangeLog
 from utils import extract_usdt_pair
 from utils import detect_new_listing
 from utils import send_notification
@@ -35,5 +35,5 @@ if __name__ == "__main__":
             # re initialization for a new token listing 
             listing = new_listing
             send_notification(symbol=new_symbol, conf_path='.config.json')
-
+        
         time.sleep(0.05)
