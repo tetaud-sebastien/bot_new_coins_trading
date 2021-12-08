@@ -34,7 +34,6 @@ if __name__ == "__main__":
             print(err)
             continue
 
-        time.sleep(30)
         new_symbol = detect_new_symbol(filename_listing, filename_new_listing)
         if not new_symbol.empty:
 
@@ -48,4 +47,4 @@ if __name__ == "__main__":
             save_json(new_listing,filename_listing)
             send_notification(symbol=symbol, conf_path='.config.json')
         
-        time.sleep(10)
+        time.sleep(1)
